@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ШАГ — Подработка для студентов в Ташкенте</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Onest:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--blue:#1A56DB;--blue-dark:#0F3A9A;--blue-light:#EEF4FF;--teal:#0891B2;--accent:#06B6D4;--white:#FFFFFF;--gray-50:#F8FAFF;--gray-100:#F1F5F9;--gray-200:#E2E8F0;--gray-400:#94A3B8;--gray-600:#475569;--gray-800:#1E293B;--dark:#0B1426}
+  *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+  body{font-family:'Onest',sans-serif;background:var(--white);color:var(--gray-800);overflow-x:hidden}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--gray-200);padding:0 5%;height:64px;display:flex;align-items:center;justify-content:space-between}
+  .logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:1.5rem;background:linear-gradient(135deg,var(--blue),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px}
+  .nav-links{display:flex;gap:2rem;list-style:none}.nav-links a{text-decoration:none;color:var(--gray-600);font-size:.9rem;font-weight:500;transition:color .2s}.nav-links a:hover{color:var(--blue)}
+  .nav-actions{display:flex;gap:.75rem;align-items:center}
+  .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}.hamburger span{width:24px;height:2px;background:var(--gray-800);border-radius:2px;display:block}
+  .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.4rem;border-radius:50px;font-family:'Onest',sans-serif;font-weight:600;font-size:.9rem;cursor:pointer;text-decoration:none;transition:all .25s;border:none}
+  .btn-outline{background:transparent;border:1.5px solid var(--blue);color:var(--blue)}.btn-outline:hover{background:var(--blue-light)}
+  .btn-primary{background:linear-gradient(135deg,var(--blue),var(--teal));color:white;box-shadow:0 4px 14px rgba(26,86,219,.35)}.btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(26,86,219,.45)}
+  .btn-lg{padding:.9rem 2rem;font-size:1rem}
+  .btn-white{background:white;color:var(--blue);box-shadow:0 4px 14px rgba(0,0,0,.1)}.btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.15)}
+  .btn-glass{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.3);color:white;backdrop-filter:blur(10px)}.btn-glass:hover{background:rgba(255,255,255,.22)}
+  .hero{min-height:100vh;padding-top:64px;background:linear-gradient(160deg,#0B1426 0%,#1A3A6E 50%,#0891B2 100%);position:relative;display:flex;align-items:center;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 50%,rgba(6,182,212,.2) 0%,transparent 70%),radial-gradient(ellipse 50% 80% at 20% 80%,rgba(26,86,219,.3) 0%,transparent 60%)}
+  .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:60px 60px}
+  .shape{position:absolute;border-radius:50%;animation:float 6s ease-in-out infinite}
+  .shape-1{width:300px;height:300px;background:linear-gradient(135deg,rgba(6,182,212,.15),rgba(26,86,219,.1));border:1px solid rgba(6,182,212,.2);top:10%;right:5%}
+  .shape-2{width:150px;height:150px;background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.3);bottom:20%;right:25%;animation-delay:2s}
+  .shape-3{width:80px;height:80px;background:rgba(26,86,219,.2);top:30%;right:15%;animation-delay:4s}
+  @keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}33%{transform:translateY(-15px) rotate(3deg)}66%{transform:translateY(-8px) rotate(-2deg)}}
+  .hero-content{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:5rem 5%;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+  .hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(6,182,212,.15);border:1px solid rgba(6,182,212,.4);color:var(--accent);padding:.4rem 1rem;border-radius:50px;font-size:.8rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:1.5rem}
+  .hero-badge span{width:8px;height:8px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+  .hero h1{font-family:'Unbounded',sans-serif;font-size:clamp(2rem,4vw,3.4rem);font-weight:900;line-height:1.15;color:white;margin-bottom:1.5rem;letter-spacing:-1.5px}
+  .hero h1 .highlight{background:linear-gradient(90deg,#06B6D4,#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .hero p{font-size:1.1rem;color:rgba(255,255,255,.75);line-height:1.7;margin-bottom:2.5rem;font-weight:300}
+  .hero-buttons{display:flex;gap:1rem;flex-wrap:wrap}
+  .hero-stats{display:flex;gap:2rem;margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(255,255,255,.1)}
+  .stat-num{font-family:'Unbounded',sans-serif;font-size:1.8rem;font-weight:700;background:linear-gradient(90deg,white,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .stat-label{font-size:.8rem;color:rgba(255,255,255,.5);margin-top:.2rem}
+  .hero-visual{display:flex;flex-direction:column;gap:1rem;animation:slideIn 1s ease}
+  @keyframes slideIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+  .job-card{background:rgba(255,255,255,.08);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:1.2rem 1.5rem;display:flex;align-items:center;gap:1rem;transition:all .3s;cursor:pointer}
+  .job-card:hover{background:rgba(255,255,255,.14);transform:translateX(-4px)}
+  .job-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+  .job-info{flex:1}.job-title{font-weight:600;color:white;font-size:.95rem}.job-meta{font-size:.8rem;color:rgba(255,255,255,.5);margin-top:.2rem}
+  .job-pay{font-family:'Unbounded',sans-serif;font-weight:700;color:var(--accent);font-size:.85rem;white-space:nowrap}
+  section{padding:5rem 5%}.container{max-width:1200px;margin:0 auto}
+  .section-tag{display:inline-block;background:var(--blue-light);color:var(--blue);font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:.35rem .9rem;border-radius:50px;margin-bottom:1rem}
+  .section-title{font-family:'Unbounded',sans-serif;font-size:clamp(1.6rem,3vw,2.5rem);font-weight:800;color:var(--dark);letter-spacing:-1px;line-height:1.2;margin-bottom:1rem}
+  .section-sub{color:var(--gray-600);font-size:1.05rem;line-height:1.7;max-width:560px}
+  .how-section{background:var(--gray-50)}
+  .steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:3.5rem;position:relative}
+  .steps-grid::before{content:'';position:absolute;top:32px;left:calc(16.6% + 1rem);right:calc(16.6% + 1rem);height:2px;background:linear-gradient(90deg,var(--blue),var(--accent));z-index:0}
+  .step-card{background:white;border-radius:20px;padding:2rem;text-align:center;border:1px solid var(--gray-200);position:relative;z-index:1;transition:all .3s}.step-card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(26,86,219,.12)}
+  .step-num{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--accent));color:white;font-family:'Unbounded',sans-serif;font-size:1.4rem;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;box-shadow:0 8px 24px rgba(26,86,219,.3)}
+  .step-card h3{font-family:'Unbounded',sans-serif;font-size:1rem;font-weight:700;color:var(--dark);margin-bottom:.75rem}.step-card p{color:var(--gray-600);font-size:.9rem;line-height:1.6}
+  .categories-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:3rem}
+  .cat-card{background:white;border:1.5px solid var(--gray-200);border-radius:16px;padding:1.5rem 1.25rem;text-align:center;cursor:pointer;transition:all .3s;text-decoration:none;display:block}
+  .cat-card:hover{border-color:var(--blue);background:var(--blue-light);transform:translateY(-4px);box-shadow:0 12px 36px rgba(26,86,219,.12)}
+  .cat-emoji{font-size:2rem;margin-bottom:.75rem;display:block}.cat-name{font-weight:600;color:var(--dark);font-size:.9rem;margin-bottom:.3rem}.cat-count{font-size:.78rem;color:var(--gray-400)}
+  .benefits-section{background:linear-gradient(160deg,var(--dark) 0%,#0F2D5E 100%)}
+  .benefits-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3.5rem}
+  .benefit-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:2rem;transition:all .3s}.benefit-card:hover{background:rgba(255,255,255,.1);border-color:rgba(6,182,212,.4);transform:translateY(-4px)}
+  .benefit-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,rgba(26,86,219,.5),rgba(6,182,212,.5));display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.2rem;border:1px solid rgba(6,182,212,.3)}
+  .benefit-card h3{font-family:'Unbounded',sans-serif;font-size:.95rem;font-weight:700;color:white;margin-bottom:.6rem}.benefit-card p{color:rgba(255,255,255,.55);font-size:.875rem;line-height:1.6}
+  .benefits-section .section-title{color:white}.benefits-section .section-sub{color:rgba(255,255,255,.6)}.benefits-section .section-tag{background:rgba(6,182,212,.2);color:var(--accent)}
+  .filters-section{background:var(--gray-50)}
+  .filter-bar{background:white;border:1px solid var(--gray-200);border-radius:20px;padding:1.5rem 2rem;margin:2rem 0;display:flex;gap:1rem;flex-wrap:wrap;align-items:center}
+  .filter-group{display:flex;flex-direction:column;gap:.4rem;flex:1;min-width:150px}
+  .filter-label{font-size:.75rem;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em}
+  .filter-select{border:1.5px solid var(--gray-200);border-radius:10px;padding:.6rem 1rem;font-family:'Onest',sans-serif;font-size:.875rem;color:var(--gray-800);background:white;outline:none;cursor:pointer;transition:border-color .2s}.filter-select:focus{border-color:var(--blue)}
+  .jobs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2rem}
+  .listing-card{background:white;border:1.5px solid var(--gray-200);border-radius:16px;padding:1.5rem;transition:all .3s;cursor:pointer}.listing-card:hover{border-color:var(--blue);box-shadow:0 8px 30px rgba(26,86,219,.1);transform:translateY(-3px)}
+  .listing-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem}
+  .listing-badge{display:inline-flex;align-items:center;font-size:.72rem;font-weight:700;padding:.25rem .65rem;border-radius:50px}
+  .listing-title{font-weight:700;color:var(--dark);font-size:1rem;margin:.4rem 0}.listing-company{font-size:.82rem;color:var(--gray-400)}
+  .listing-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin:.8rem 0}.tag{background:var(--gray-100);color:var(--gray-600);font-size:.75rem;padding:.25rem .65rem;border-radius:6px}
+  .listing-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--gray-100);padding-top:.8rem;margin-top:.8rem}
+  .pay{font-family:'Unbounded',sans-serif;font-size:1rem;font-weight:700;color:var(--blue)}.pay span{font-family:'Onest',sans-serif;font-size:.75rem;font-weight:400;color:var(--gray-400)}
+  .profiles-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3rem;margin-top:3.5rem}
+  .profile-panel{background:white;border-radius:24px;border:2px solid var(--gray-200);overflow:hidden;transition:all .3s}.profile-panel:hover{box-shadow:0 24px 80px rgba(26,86,219,.12);border-color:var(--blue)}
+  .panel-header{background:linear-gradient(135deg,var(--blue-dark),var(--blue));padding:2rem 2rem 1.5rem;color:white}.panel-header.employer{background:linear-gradient(135deg,var(--teal),var(--blue))}
+  .panel-type{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;opacity:.7}.panel-title{font-family:'Unbounded',sans-serif;font-size:1.4rem;font-weight:800;margin-top:.25rem}
+  .panel-features{padding:2rem}.feature-row{display:flex;align-items:flex-start;gap:.85rem;padding:.85rem 0;border-bottom:1px solid var(--gray-100)}.feature-row:last-child{border-bottom:none}
+  .feat-check{width:24px;height:24px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--accent));display:flex;align-items:center;justify-content:center;font-size:.7rem;color:white;flex-shrink:0;margin-top:.1rem}
+  .feat-text strong{font-weight:600;color:var(--dark);font-size:.9rem;display:block}.feat-text span{font-size:.82rem;color:var(--gray-400)}
+  .panel-cta{padding:0 2rem 2rem}
+  .testimonials-section{background:var(--blue-light)}
+  .testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
+  .testimonial-card{background:white;border-radius:20px;padding:1.75rem;border:1.5px solid var(--gray-200);transition:all .3s}.testimonial-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(26,86,219,.1)}
+  .stars{color:#FBBF24;font-size:.9rem;margin-bottom:1rem;letter-spacing:2px}.testimonial-text{color:var(--gray-600);font-size:.9rem;line-height:1.7;margin-bottom:1.5rem;font-style:italic}
+  .testimonial-author{display:flex;align-items:center;gap:.75rem}.author-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--accent));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:.9rem}
+  .author-name{font-weight:600;color:var(--dark);font-size:.875rem}.author-role{font-size:.775rem;color:var(--gray-400)}
+  .cta-section{background:linear-gradient(135deg,var(--blue-dark),var(--blue),var(--teal));text-align:center;padding:6rem 5%;position:relative;overflow:hidden}
+  .cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(6,182,212,.2),transparent)}
+  .cta-content{position:relative;z-index:1}.cta-section .section-tag{background:rgba(255,255,255,.15);color:white}.cta-section .section-title{color:white;margin:0 auto 1rem}.cta-section .section-sub{color:rgba(255,255,255,.75);margin:0 auto 2.5rem;text-align:center}
+  .cta-buttons{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+  footer{background:var(--dark);color:rgba(255,255,255,.6);padding:3rem 5% 2rem}
+  .footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+  .footer-brand .logo{font-size:1.3rem}.footer-brand p{font-size:.85rem;line-height:1.7;margin-top:1rem}
+  .footer-col h4{color:white;font-family:'Unbounded',sans-serif;font-size:.8rem;font-weight:700;margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:.08em}
+  .footer-col ul{list-style:none}.footer-col ul li{margin-bottom:.7rem}.footer-col ul a{text-decoration:none;color:rgba(255,255,255,.5);font-size:.85rem;transition:color .2s}.footer-col ul a:hover{color:var(--accent)}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:2rem;text-align:center;font-size:.8rem;max-width:1200px;margin:0 auto}
+  .modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(11,20,38,.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+  .modal-overlay.open{opacity:1;pointer-events:all}
+  .modal{background:white;border-radius:24px;width:90%;max-width:500px;padding:2.5rem;transform:scale(.95);transition:transform .3s;max-height:90vh;overflow-y:auto}
+  .modal-overlay.open .modal{transform:scale(1)}
+  .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+  .modal-title{font-family:'Unbounded',sans-serif;font-size:1.2rem;font-weight:800;color:var(--dark)}
+  .modal-close{width:36px;height:36px;border-radius:50%;background:var(--gray-100);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--gray-600);transition:all .2s}.modal-close:hover{background:var(--gray-200)}
+  .modal-tabs{display:flex;background:var(--gray-100);border-radius:12px;padding:4px;margin-bottom:1.5rem}
+  .modal-tab{flex:1;padding:.6rem;text-align:center;border-radius:10px;cursor:pointer;font-size:.875rem;font-weight:600;color:var(--gray-400);transition:all .2s;border:none;background:transparent;font-family:'Onest',sans-serif}
+  .modal-tab.active{background:white;color:var(--blue);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  .form-group{margin-bottom:1.1rem}.form-label{display:block;font-size:.82rem;font-weight:600;color:var(--gray-600);margin-bottom:.4rem}
+  .form-input,.form-textarea{width:100%;border:1.5px solid var(--gray-200);border-radius:12px;padding:.72rem 1rem;font-family:'Onest',sans-serif;font-size:.9rem;color:var(--gray-800);outline:none;transition:border-color .2s;background:white}
+  .form-input:focus,.form-textarea:focus{border-color:var(--blue)}.form-textarea{resize:vertical;min-height:80px}
+  .form-grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}.form-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem}
+  .form-submit{width:100%;justify-content:center;border-radius:12px;padding:.9rem;font-size:.95rem;margin-top:.5rem}
+  .role-chooser{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
+  .role-btn{border:2px solid var(--gray-200);border-radius:14px;padding:1.2rem 1rem;text-align:center;cursor:pointer;transition:all .2s;background:white;font-family:'Onest',sans-serif}
+  .role-btn:hover,.role-btn.active{border-color:var(--blue);background:var(--blue-light)}
+  .role-icon{font-size:1.8rem;display:block;margin-bottom:.4rem}.role-name{font-weight:600;color:var(--dark);font-size:.875rem}
+  .form-note{border-radius:10px;padding:.75rem 1rem;margin-bottom:1.25rem;font-size:.82rem;font-weight:500}
+  .form-note-blue{background:var(--blue-light);color:var(--blue)}.form-note-green{background:#ECFDF5;color:#059669}.form-note-teal{background:#ECFEFF;color:#0E7490}
+  .form-link{font-size:.82rem;color:var(--gray-400);text-align:center;margin-top:1rem}.form-link a{color:var(--blue);text-decoration:none;font-weight:600}
+  .forgot{text-align:right;margin-bottom:1rem}.forgot a{font-size:.8rem;color:var(--blue);text-decoration:none}
+  @keyframes fadeCard{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .fade-in{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}.fade-in.visible{opacity:1;transform:translateY(0)}
+  /* DASHBOARD */
+  .dash-overlay{position:fixed;inset:0;z-index:300;background:#F8FAFF;overflow-y:auto;display:none}
+  .dash-overlay.open{display:block}
+  .dash-nav{background:white;border-bottom:1px solid var(--gray-200);padding:0 5%;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+  .dash-logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:1.3rem;background:linear-gradient(135deg,var(--blue),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .dash-body{max-width:1100px;margin:0 auto;padding:2.5rem 5%}
+  .dash-header{background:linear-gradient(135deg,var(--blue-dark),var(--blue),var(--teal));border-radius:24px;padding:2rem 2.5rem;color:white;display:flex;align-items:center;gap:1.5rem;margin-bottom:2rem}
+  .dash-header.employer{background:linear-gradient(135deg,var(--teal),var(--blue))}
+  .dash-avatar{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.2);border:3px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700;color:white;flex-shrink:0}
+  .dash-greeting{flex:1}
+  .dash-greeting h2{font-family:'Unbounded',sans-serif;font-size:1.3rem;font-weight:800;margin-bottom:.3rem}
+  .dash-greeting p{opacity:.8;font-size:.9rem}
+  .dash-badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);padding:.35rem .9rem;border-radius:50px;font-size:.78rem;font-weight:600}
+  .dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+  .dash-stat{background:white;border:1.5px solid var(--gray-200);border-radius:16px;padding:1.25rem 1.5rem;text-align:center;transition:all .3s}
+  .dash-stat:hover{border-color:var(--blue);box-shadow:0 8px 24px rgba(26,86,219,.1)}
+  .dash-stat-num{font-family:'Unbounded',sans-serif;font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--blue),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .dash-stat-label{font-size:.8rem;color:var(--gray-400);margin-top:.3rem}
+  .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+  .dash-card{background:white;border:1.5px solid var(--gray-200);border-radius:20px;overflow:hidden}
+  .dash-card-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between}
+  .dash-card-title{font-family:'Unbounded',sans-serif;font-size:.875rem;font-weight:700;color:var(--dark)}
+  .dash-card-body{padding:1.25rem 1.5rem}
+  .dash-item{display:flex;align-items:center;gap:.85rem;padding:.75rem 0;border-bottom:1px solid var(--gray-100)}
+  .dash-item:last-child{border-bottom:none}
+  .dash-item-icon{width:40px;height:40px;border-radius:12px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+  .dash-item-info{flex:1}
+  .dash-item-title{font-weight:600;font-size:.875rem;color:var(--dark)}
+  .dash-item-sub{font-size:.78rem;color:var(--gray-400);margin-top:.15rem}
+  .dash-item-status{font-size:.72rem;font-weight:700;padding:.2rem .6rem;border-radius:50px}
+  .status-new{background:#ECFDF5;color:#059669}
+  .status-review{background:#EEF4FF;color:#1A56DB}
+  .status-done{background:#F1F5F9;color:#475569}
+  .dash-profile-row{display:flex;align-items:center;justify-content:space-between;padding:.65rem 0;border-bottom:1px solid var(--gray-100);font-size:.875rem}
+  .dash-profile-row:last-child{border-bottom:none}
+  .dash-profile-label{color:var(--gray-400);font-weight:500}
+  .dash-profile-val{color:var(--dark);font-weight:600;text-align:right}
+  .dash-full{grid-column:1/-1}
+  .dash-tag{background:var(--blue-light);color:var(--blue);font-size:.72rem;font-weight:600;padding:.2rem .6rem;border-radius:6px;display:inline-block;margin:.15rem}
+  @media(max-width:768px){.dash-stats{grid-template-columns:repeat(2,1fr)}.dash-grid{grid-template-columns:1fr}}
+
+  @media(max-width:1024px){.categories-grid{grid-template-columns:repeat(4,1fr)}.benefits-grid{grid-template-columns:repeat(2,1fr)}.footer-inner{grid-template-columns:1fr 1fr}}
+  @media(max-width:768px){.nav-links{display:none}.hamburger{display:flex}.hero-content{grid-template-columns:1fr;gap:2rem;text-align:center}.hero-buttons{justify-content:center}.hero-stats{justify-content:center}.hero-visual{display:none}.steps-grid{grid-template-columns:1fr}.steps-grid::before{display:none}.categories-grid{grid-template-columns:repeat(2,1fr)}.benefits-grid{grid-template-columns:1fr}.jobs-grid{grid-template-columns:1fr}.profiles-grid{grid-template-columns:1fr}.testimonials-grid{grid-template-columns:1fr}.footer-inner{grid-template-columns:1fr;gap:2rem}.filter-bar{flex-direction:column}.filter-group{min-width:100%}.cta-buttons{flex-direction:column;align-items:center}.form-grid2,.form-grid3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">ШАГ</div>
+  <ul class="nav-links">
+    <li><a href="#how">Как это работает</a></li>
+    <li><a href="#categories">Категории</a></li>
+    <li><a href="#jobs">Вакансии</a></li>
+    <li><a href="#profiles">Профили</a></li>
+  </ul>
+  <div class="nav-actions" id="navActions">
+    <button class="btn btn-outline" onclick="openModal('login')">Войти</button>
+    <button class="btn btn-primary" onclick="openModal('register')">Регистрация</button>
+  </div>
+  <div class="nav-user" id="navUser" style="display:none;align-items:center;gap:.75rem">
+    <div id="navAvatar" style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--accent));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:.9rem;cursor:pointer" onclick="openDashboard()"></div>
+    <button class="btn btn-outline" style="padding:.4rem 1rem;font-size:.82rem" onclick="openDashboard()">Кабинет</button>
+    <button class="btn" style="padding:.4rem 1rem;font-size:.82rem;background:var(--gray-100);color:var(--gray-600)" onclick="logout()">Выйти</button>
+  </div>
+  <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+</nav>
+
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="shape shape-1"></div><div class="shape shape-2"></div><div class="shape shape-3"></div>
+  <div class="hero-content">
+    <div>
+      <div class="hero-badge"><span></span> Платформа №1 для студентов Ташкента</div>
+      <h1>Найди <span class="highlight">подработку</span> рядом с университетом</h1>
+      <p>Соединяем студентов с работодателями для почасовой и временной работы. Подрабатывай в свободное время и зарабатывай реальные деньги.</p>
+      <div class="hero-buttons">
+        <button class="btn btn-primary btn-lg" onclick="openModal('register')">🎓 Найти работу</button>
+        <button class="btn btn-glass btn-lg" onclick="openModal('postjob')">📋 Разместить вакансию</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="stat-num">2 400+</div><div class="stat-label">Студентов зарегистрировано</div></div>
+        <div><div class="stat-num">380+</div><div class="stat-label">Активных вакансий</div></div>
+        <div><div class="stat-num">4.9★</div><div class="stat-label">Средний рейтинг</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="job-card"><div class="job-icon" style="background:linear-gradient(135deg,#DBEAFE,#BFDBFE)">🛵</div><div class="job-info"><div class="job-title">Курьер на самокате</div><div class="job-meta">📍 Юнусабад · 4–8 часов</div></div><div class="job-pay">35 000 сум/ч</div></div>
+      <div class="job-card"><div class="job-icon" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0)">📣</div><div class="job-info"><div class="job-title">Промоутер на выставке</div><div class="job-meta">📍 Чиланзар · Сб–Вс</div></div><div class="job-pay">40 000 сум/ч</div></div>
+      <div class="job-card"><div class="job-icon" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A)">🍽️</div><div class="job-info"><div class="job-title">Официант на банкете</div><div class="job-meta">📍 Мирзо-Улугбек · Разовый</div></div><div class="job-pay">45 000 сум/ч</div></div>
+      <div class="job-card"><div class="job-icon" style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE)">💻</div><div class="job-info"><div class="job-title">SMM-помощник</div><div class="job-meta">📍 Удалённо · Гибкий</div></div><div class="job-pay">50 000 сум/ч</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="how-section" id="how">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-tag">Как это работает</div>
+      <h2 class="section-title">Три шага до первого заработка</h2>
+      <p class="section-sub">Регистрация, поиск и выход на работу — проще не бывает</p>
+    </div>
+    <div class="steps-grid fade-in">
+      <div class="step-card"><div class="step-num">1</div><h3>Создай профиль</h3><p>Зарегистрируйся за 2 минуты: укажи университет, навыки и добавь фото. Твой профиль — твоё первое резюме.</p></div>
+      <div class="step-card"><div class="step-num">2</div><h3>Найди вакансию</h3><p>Фильтруй по району Ташкента, оплате и времени. Откликайся на интересные предложения одним нажатием.</p></div>
+      <div class="step-card"><div class="step-num">3</div><h3>Выходи и зарабатывай</h3><p>Общайся с работодателем в чате, выходи на работу и получай оплату. Рейтинг растёт с каждым заказом.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="categories">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-tag">Категории работ</div>
+      <h2 class="section-title">Любая подработка для студента</h2>
+      <p class="section-sub">Выбери направление, которое подходит твоему графику и интересам</p>
+    </div>
+    <div class="categories-grid fade-in">
+      <a href="#jobs" class="cat-card" onclick="filterByCategory('Курьер')"><span class="cat-emoji">🛵</span><div class="cat-name">Курьер</div><div class="cat-count">87 вакансий</div></a>
+      <a href="#jobs" class="cat-card" onclick="filterByCategory('Промоутер')"><span class="cat-emoji">📣</span><div class="cat-name">Промоутер</div><div class="cat-count">54 вакансии</div></a>
+      <a href="#jobs" class="cat-card" onclick="filterByCategory('Официант')"><span class="cat-emoji">🍽️</span><div class="cat-name">Официант</div><div class="cat-count">43 вакансии</div></a>
+      <a href="#jobs" class="cat-card" onclick="filterByCategory('Другое')"><span class="cat-emoji">🎉</span><div class="cat-name">Помощник на мероприятиях</div><div class="cat-count">31 вакансия</div></a>
+      <a href="#jobs" class="cat-card" onclick="filterByCategory('Репетитор')"><span class="cat-emoji">📚</span><div class="cat-name">Репетитор</div><div class="cat-count">67 вакансий</div></a>
+      <a href="#jobs" class="cat-card" onclick="filterByCategory('IT / SMM')"><span class="cat-emoji">💻</span><div class="cat-name">SMM / Дизайн / IT</div><div class="cat-count">59 вакансий</div></a>
+      <a href="#jobs" class="cat-card" onclick="filterByCategory('Грузчик')"><span class="cat-emoji">📦</span><div class="cat-name">Грузчик</div><div class="cat-count">26 вакансий</div></a>
+      <a href="#jobs" class="cat-card" onclick="resetFilters()"><span class="cat-emoji">✨</span><div class="cat-name">Все вакансии</div><div class="cat-count">382 вакансии</div></a>
+    </div>
+  </div>
+</section>
+
+<section class="filters-section" id="jobs">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-tag">Актуальные вакансии</div>
+      <h2 class="section-title">Работа ждёт тебя прямо сейчас</h2>
+    </div>
+    <div class="filter-bar fade-in">
+      <div class="filter-group"><label class="filter-label">Район Ташкента</label><select class="filter-select" id="filterDistrict"><option value="">Все районы</option><option value="Юнусабад">Юнусабад</option><option value="Чиланзар">Чиланзар</option><option value="Мирзо-Улугбек">Мирзо-Улугбек</option><option value="Яшнобод">Яшнобод</option><option value="Бектемир">Бектемир</option><option value="Учтепа">Учтепа</option><option value="Сергели">Сергели</option><option value="Удалённо">Удалённо</option></select></div>
+      <div class="filter-group"><label class="filter-label">Оплата (в час)</label><select class="filter-select" id="filterPay"><option value="">Любая</option><option value="low">До 30 000 сум</option><option value="mid">30 000–50 000 сум</option><option value="high">Свыше 50 000 сум</option></select></div>
+      <div class="filter-group"><label class="filter-label">Время работы</label><select class="filter-select" id="filterTime"><option value="">Любое</option><option value="morning">Утро (6–12)</option><option value="day">День (12–18)</option><option value="evening">Вечер (18–00)</option><option value="weekend">Выходные</option></select></div>
+      <div class="filter-group"><label class="filter-label">Категория</label><select class="filter-select" id="filterCategory"><option value="">Все категории</option><option value="Курьер">Курьер</option><option value="Промоутер">Промоутер</option><option value="Официант">Официант</option><option value="IT / SMM">IT / SMM</option><option value="Репетитор">Репетитор</option><option value="Грузчик">Грузчик</option><option value="Другое">Другое</option></select></div>
+      <div style="display:flex;align-items:flex-end;gap:.5rem">
+        <button class="btn btn-primary" onclick="applyFilters()">🔍 Найти</button>
+        <button class="btn btn-outline" onclick="resetFilters()">✕</button>
+      </div>
+    </div>
+    <div id="resultsInfo" style="display:none;margin-bottom:1rem;font-size:.875rem;color:var(--gray-600)"></div>
+    <div class="jobs-grid" id="jobsGrid"></div>
+    <div id="noResults" style="display:none;text-align:center;padding:3rem 1rem">
+      <div style="font-size:3rem;margin-bottom:1rem">🔍</div>
+      <div style="font-family:'Unbounded',sans-serif;font-weight:700;color:var(--dark);margin-bottom:.5rem">Вакансии не найдены</div>
+      <div style="color:var(--gray-400);font-size:.9rem">Попробуй изменить параметры поиска</div>
+      <button class="btn btn-primary" style="margin-top:1.5rem" onclick="resetFilters()">Сбросить фильтры</button>
+    </div>
+  </div>
+</section>
+
+<section class="benefits-section">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-tag">Наши преимущества</div>
+      <h2 class="section-title">Почему студенты выбирают ШАГ</h2>
+      <p class="section-sub">Мы создали платформу специально для студенческого ритма жизни</p>
+    </div>
+    <div class="benefits-grid fade-in">
+      <div class="benefit-card"><div class="benefit-icon">⚡</div><h3>Быстрый старт</h3><p>Регистрация за 2 минуты. Первый отклик уже через 5 минут после создания профиля.</p></div>
+      <div class="benefit-card"><div class="benefit-icon">🛡️</div><h3>Безопасные сделки</h3><p>Проверенные работодатели, система рейтингов и отзывов защищают от недобросовестных заказчиков.</p></div>
+      <div class="benefit-card"><div class="benefit-icon">📍</div><h3>Вся работа в Ташкенте</h3><p>Фильтры по всем районам города: найди вакансию рядом с домом или университетом.</p></div>
+      <div class="benefit-card"><div class="benefit-icon">💬</div><h3>Встроенный чат</h3><p>Общайся с работодателем напрямую в приложении. Никаких лишних звонков и пересылок.</p></div>
+      <div class="benefit-card"><div class="benefit-icon">📊</div><h3>Рост рейтинга</h3><p>Каждый выполненный заказ поднимает твой рейтинг. Топовые студенты получают лучшие предложения.</p></div>
+      <div class="benefit-card"><div class="benefit-icon">📱</div><h3>Мобильная версия</h3><p>Сайт отлично работает на любом устройстве. Ищи работу прямо с телефона между парами.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="profiles">
+  <div class="container">
+    <div class="fade-in" style="text-align:center;margin-bottom:.5rem">
+      <div class="section-tag">Личные кабинеты</div>
+      <h2 class="section-title">Всё что нужно — в одном месте</h2>
+      <p class="section-sub" style="margin:0 auto">Разные кабинеты для студентов и работодателей</p>
+    </div>
+    <div class="profiles-grid fade-in">
+      <div class="profile-panel">
+        <div class="panel-header"><div class="panel-type">Для студентов</div><div class="panel-title">Кабинет студента</div></div>
+        <div class="panel-features">
+          <div class="feature-row"><div class="feat-check">✓</div><div class="feat-text"><strong>Профиль и резюме</strong><span>Имя, возраст, университет, навыки и фото</span></div></div>
+          <div class="feature-row"><div class="feat-check">✓</div><div class="feat-text"><strong>История заказов</strong><span>Все выполненные работы с датами и суммами</span></div></div>
+          <div class="feature-row"><div class="feat-check">✓</div><div class="feat-text"><strong>Рейтинг и отзывы</strong><span>Честная система оценок от работодателей</span></div></div>
+          <div class="feature-row"><div class="feat-check">✓</div><div class="feat-text"><strong>Уведомления</strong><span>Мгновенные оповещения о новых вакансиях</span></div></div>
+          <div class="feature-row"><div class="feat-check">✓</div><div class="feat-text"><strong>Чат с работодателем</strong><span>Удобная переписка прямо в платформе</span></div></div>
+        </div>
+        <div class="panel-cta"><button class="btn btn-primary btn-lg" style="width:100%;justify-content:center" onclick="openModal('register')">🎓 Зарегистрироваться как студент</button></div>
+      </div>
+      <div class="profile-panel">
+        <div class="panel-header employer"><div class="panel-type">Для работодателей</div><div class="panel-title">Кабинет работодателя</div></div>
+        <div class="panel-features">
+          <div class="feature-row"><div class="feat-check">✓</div><div class="feat-text"><strong>Публикация вакансий</strong><span>Укажи требования, время и оплату</span></div></div>
+          <div class="feature-row"><div class="feat-check">✓</div><div class="feat-text"><strong>Выбор исполнителя</strong><span>Просматривай профили и рейтинги студентов</span></div></div>
+          <div class="feature-row"><div class="feat-check">✓</div><div class="feat-text"><strong>Геолокация</strong><span>Указывай точный адрес объекта в Ташкенте</span></div></div>
+          <div class="feature-row"><div class="feat-check">✓</div><div class="feat-text"><strong>Система отзывов</strong><span>Оставляй оценки после каждого сотрудничества</span></div></div>
+          <div class="feature-row"><div class="feat-check">✓</div><div class="feat-text"><strong>Управление заявками</strong><span>Принимай или отклоняй отклики студентов</span></div></div>
+        </div>
+        <div class="panel-cta"><button class="btn btn-primary btn-lg" style="width:100%;justify-content:center;background:linear-gradient(135deg,var(--teal),var(--blue))" onclick="openModal('postjob')">📋 Разместить вакансию</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonials-section">
+  <div class="container">
+    <div class="fade-in" style="text-align:center">
+      <div class="section-tag">Отзывы</div>
+      <h2 class="section-title">Говорят студенты и работодатели</h2>
+    </div>
+    <div class="testimonials-grid fade-in">
+      <div class="testimonial-card"><div class="stars">★★★★★</div><p class="testimonial-text">«Нашёл работу промоутера в день регистрации! Заработал за выходные столько, сколько раньше искал месяц. Платформа реально работает.»</p><div class="testimonial-author"><div class="author-avatar">А</div><div><div class="author-name">Алишер Т.</div><div class="author-role">Студент ТГТУ, 3 курс</div></div></div></div>
+      <div class="testimonial-card"><div class="stars">★★★★★</div><p class="testimonial-text">«Как работодатель — очень удобно. Разместила вакансию вечером, утром уже 8 откликов от студентов с рейтингами. Взяла троих.»</p><div class="testimonial-author"><div class="author-avatar">Н</div><div><div class="author-name">Нилуфар К.</div><div class="author-role">Менеджер ивент-компании</div></div></div></div>
+      <div class="testimonial-card"><div class="stars">★★★★★</div><p class="testimonial-text">«Подрабатываю репетитором через ШАГ уже 4 месяца. Стабильный доход, удобный чат и рост рейтинга после каждого занятия.»</p><div class="testimonial-author"><div class="author-avatar">З</div><div><div class="author-name">Зулайхо М.</div><div class="author-role">Студентка НУУз, 4 курс</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="cta-content">
+    <div class="section-tag">Начни прямо сейчас</div>
+    <h2 class="section-title">Твой первый заработок — в одном шаге</h2>
+    <p class="section-sub">Присоединяйся к 2400+ студентам Ташкента, которые уже зарабатывают через ШАГ</p>
+    <div class="cta-buttons">
+      <button class="btn btn-white btn-lg" onclick="openModal('register')">🎓 Зарегистрироваться как студент</button>
+      <button class="btn btn-glass btn-lg" onclick="openModal('postjob')">📋 Разместить вакансию</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand"><div class="logo">ШАГ</div><p>Платформа для студенческой подработки в Ташкенте. Соединяем студентов и работодателей для почасовой занятости.</p></div>
+    <div class="footer-col"><h4>Студентам</h4><ul><li><a href="#">Найти работу</a></li><li><a href="#">Все категории</a></li><li><a href="#">Мой профиль</a></li><li><a href="#">Рейтинг</a></li></ul></div>
+    <div class="footer-col"><h4>Работодателям</h4><ul><li><a href="#">Разместить вакансию</a></li><li><a href="#">Поиск студентов</a></li><li><a href="#">Тарифы</a></li><li><a href="#">Помощь</a></li></ul></div>
+    <div class="footer-col"><h4>Контакты</h4><ul><li><a href="#">Telegram: @shaguz</a></li><li><a href="#">Instagram</a></li><li><a href="#"><span class="__cf_email__" data-cfemail="cda4a3aba28dbea5acaae3b8b7">[email&#160;protected]</span></a></li><li><a href="#">Ташкент, Узбекистан</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><p>© 2024 ШАГ — Подработка для студентов Ташкента. Все права защищены.</p></div>
+</footer>
+
+<!-- STUDENT DASHBOARD -->
+<div class="dash-overlay" id="dashStudent">
+  <div class="dash-nav">
+    <div class="dash-logo">ШАГ</div>
+    <div style="display:flex;align-items:center;gap:.75rem">
+      <span style="font-size:.875rem;color:var(--gray-600)" id="dashStudentName"></span>
+      <button class="btn btn-outline" style="padding:.4rem 1rem;font-size:.82rem" onclick="closeDashboard()">← На сайт</button>
+      <button class="btn" style="padding:.4rem 1rem;font-size:.82rem;background:var(--gray-100);color:var(--gray-600)" onclick="logout()">Выйти</button>
+    </div>
+  </div>
+  <div class="dash-body">
+    <div class="dash-header">
+      <div class="dash-avatar" id="dashStudentAvatar"></div>
+      <div class="dash-greeting">
+        <h2 id="dashStudentGreeting">Привет!</h2>
+        <p id="dashStudentMeta"></p>
+      </div>
+      <div class="dash-badge">🎓 Студент</div>
+    </div>
+    <div class="dash-stats">
+      <div class="dash-stat"><div class="dash-stat-num">0</div><div class="dash-stat-label">Откликов отправлено</div></div>
+      <div class="dash-stat"><div class="dash-stat-num">0</div><div class="dash-stat-label">Работ выполнено</div></div>
+      <div class="dash-stat"><div class="dash-stat-num">—</div><div class="dash-stat-label">Рейтинг</div></div>
+      <div class="dash-stat"><div class="dash-stat-num">0</div><div class="dash-stat-label">Заработано (сум)</div></div>
+    </div>
+    <div class="dash-grid">
+      <!-- Профиль -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title">👤 Мой профиль</div>
+          <button class="btn" style="padding:.3rem .8rem;font-size:.75rem;background:var(--blue-light);color:var(--blue);border-radius:8px" onclick="alert('Редактирование профиля — в разработке')">Изменить</button>
+        </div>
+        <div class="dash-card-body" id="studentProfileCard"></div>
+      </div>
+      <!-- Мои отклики -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title">📋 Мои отклики</div>
+          <span style="font-size:.78rem;color:var(--gray-400)">Последние 5</span>
+        </div>
+        <div class="dash-card-body">
+          <div style="text-align:center;padding:2rem;color:var(--gray-400)">
+            <div style="font-size:2.5rem;margin-bottom:.75rem">📭</div>
+            <div style="font-weight:600;color:var(--dark);margin-bottom:.3rem">Откликов пока нет</div>
+            <div style="font-size:.82rem">Найди вакансию и нажми «Откликнуться»</div>
+            <button class="btn btn-primary" style="margin-top:1rem;padding:.5rem 1.2rem;font-size:.82rem" onclick="closeDashboard();document.getElementById('jobs').scrollIntoView({behavior:'smooth'})">Найти работу →</button>
+          </div>
+        </div>
+      </div>
+      <!-- Рекомендуемые вакансии -->
+      <div class="dash-card dash-full">
+        <div class="dash-card-header">
+          <div class="dash-card-title">⚡ Рекомендуемые вакансии</div>
+          <button class="btn" style="padding:.3rem .8rem;font-size:.75rem;background:var(--blue-light);color:var(--blue);border-radius:8px" onclick="closeDashboard();document.getElementById('jobs').scrollIntoView({behavior:'smooth'})">Все вакансии →</button>
+        </div>
+        <div class="dash-card-body" id="studentRecommended"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EMPLOYER DASHBOARD -->
+<div class="dash-overlay" id="dashEmployer">
+  <div class="dash-nav">
+    <div class="dash-logo">ШАГ</div>
+    <div style="display:flex;align-items:center;gap:.75rem">
+      <span style="font-size:.875rem;color:var(--gray-600)" id="dashEmployerName"></span>
+      <button class="btn btn-primary" style="padding:.4rem 1rem;font-size:.82rem" onclick="closeDashboard();openModal('postjob')">+ Разместить вакансию</button>
+      <button class="btn btn-outline" style="padding:.4rem 1rem;font-size:.82rem" onclick="closeDashboard()">← На сайт</button>
+      <button class="btn" style="padding:.4rem 1rem;font-size:.82rem;background:var(--gray-100);color:var(--gray-600)" onclick="logout()">Выйти</button>
+    </div>
+  </div>
+  <div class="dash-body">
+    <div class="dash-header employer">
+      <div class="dash-avatar" id="dashEmployerAvatar"></div>
+      <div class="dash-greeting">
+        <h2 id="dashEmployerGreeting">Добро пожаловать!</h2>
+        <p id="dashEmployerMeta"></p>
+      </div>
+      <div class="dash-badge">🏢 Работодатель</div>
+    </div>
+    <div class="dash-stats">
+      <div class="dash-stat"><div class="dash-stat-num">0</div><div class="dash-stat-label">Активных вакансий</div></div>
+      <div class="dash-stat"><div class="dash-stat-num">0</div><div class="dash-stat-label">Откликов получено</div></div>
+      <div class="dash-stat"><div class="dash-stat-num">0</div><div class="dash-stat-label">Нанято студентов</div></div>
+      <div class="dash-stat"><div class="dash-stat-num">—</div><div class="dash-stat-label">Рейтинг компании</div></div>
+    </div>
+    <div class="dash-grid">
+      <!-- Профиль компании -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title">🏢 Профиль компании</div>
+          <button class="btn" style="padding:.3rem .8rem;font-size:.75rem;background:#ECFEFF;color:#0E7490;border-radius:8px" onclick="alert('Редактирование профиля — в разработке')">Изменить</button>
+        </div>
+        <div class="dash-card-body" id="employerProfileCard"></div>
+      </div>
+      <!-- Мои вакансии -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title">📋 Мои вакансии</div>
+          <button class="btn" style="padding:.3rem .8rem;font-size:.75rem;background:linear-gradient(135deg,var(--teal),var(--blue));color:white;border-radius:8px" onclick="closeDashboard();openModal('postjob')">+ Новая</button>
+        </div>
+        <div class="dash-card-body">
+          <div style="text-align:center;padding:2rem;color:var(--gray-400)">
+            <div style="font-size:2.5rem;margin-bottom:.75rem">📝</div>
+            <div style="font-weight:600;color:var(--dark);margin-bottom:.3rem">Вакансий пока нет</div>
+            <div style="font-size:.82rem">Разместите первую вакансию — студенты увидят её сразу</div>
+            <button class="btn btn-primary" style="margin-top:1rem;padding:.5rem 1.2rem;font-size:.82rem;background:linear-gradient(135deg,var(--teal),var(--blue))" onclick="closeDashboard();openModal('postjob')">Разместить вакансию →</button>
+          </div>
+        </div>
+      </div>
+      <!-- Входящие отклики -->
+      <div class="dash-card dash-full">
+        <div class="dash-card-header">
+          <div class="dash-card-title">👥 Входящие отклики студентов</div>
+          <span style="font-size:.78rem;color:var(--gray-400)">Появятся после публикации вакансии</span>
+        </div>
+        <div class="dash-card-body">
+          <div style="text-align:center;padding:2rem;color:var(--gray-400)">
+            <div style="font-size:2.5rem;margin-bottom:.75rem">📬</div>
+            <div style="font-weight:600;color:var(--dark);margin-bottom:.3rem">Откликов пока нет</div>
+            <div style="font-size:.82rem">После публикации вакансии студенты начнут откликаться</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Вход</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <!-- AUTH FORM -->
+    <div id="authForm">
+      <div id="roleSection" style="display:none">
+        <p class="form-label" style="margin-bottom:.6rem">Я регистрируюсь как</p>
+        <div class="role-chooser">
+          <div class="role-btn active" id="roleStudent" onclick="selectRole('student')"><span class="role-icon">🎓</span><div class="role-name">Студент</div></div>
+          <div class="role-btn" id="roleEmployerBtn" onclick="selectRole('employer')"><span class="role-icon">🏢</span><div class="role-name">Работодатель</div></div>
+        </div>
+      </div>
+      <div class="modal-tabs">
+        <button class="modal-tab active" id="tabLogin" onclick="switchTab('login')">Войти</button>
+        <button class="modal-tab" id="tabReg" onclick="switchTab('register')">Регистрация</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="loginPane">
+        <div class="form-group"><label class="form-label">Телефон или Email</label><input id="login_id" class="form-input" type="text" placeholder="+998 90 123 45 67"></div>
+        <div class="form-group"><label class="form-label">Пароль</label><input id="login_pass" class="form-input" type="password" placeholder="••••••••"></div>
+        <div style="margin-bottom:.5rem">
+          <label class="form-label" style="margin-bottom:.5rem">Войти как</label>
+          <div style="display:flex;gap:.75rem">
+            <label style="display:flex;align-items:center;gap:.4rem;font-size:.875rem;cursor:pointer"><input type="radio" name="loginRole" value="student" checked> 🎓 Студент</label>
+            <label style="display:flex;align-items:center;gap:.4rem;font-size:.875rem;cursor:pointer"><input type="radio" name="loginRole" value="employer"> 🏢 Работодатель</label>
+          </div>
+        </div>
+        <div class="forgot"><a href="#">Забыл пароль?</a></div>
+        <button id="loginSubmit" class="btn btn-primary form-submit">Войти в аккаунт →</button>
+        <p class="form-link">Нет аккаунта? <a href="#" onclick="switchTab('register');return false">Зарегистрироваться</a></p>
+      </div>
+
+      <!-- REGISTER STUDENT -->
+      <div id="regStudentPane" style="display:none">
+        <div class="form-note form-note-blue">🎓 Регистрация студента</div>
+        <div class="form-grid2">
+          <div class="form-group"><label class="form-label">Имя</label><input id="s_first" class="form-input" type="text" placeholder="Алишер"></div>
+          <div class="form-group"><label class="form-label">Фамилия</label><input id="s_last" class="form-input" type="text" placeholder="Каримов"></div>
+        </div>
+        <div class="form-grid2">
+          <div class="form-group"><label class="form-label">Возраст</label><input id="s_age" class="form-input" type="number" placeholder="20" min="17" max="30"></div>
+          <div class="form-group"><label class="form-label">Курс</label><select id="s_course" class="form-input"><option value="">— выбери —</option><option>1 курс</option><option>2 курс</option><option>3 курс</option><option>4 курс</option><option>Магистратура</option></select></div>
+        </div>
+        <div class="form-group"><label class="form-label">Университет</label><select id="s_university" class="form-input"><option value="">— выбери университет —</option><option>ТГТУ</option><option>НУУз</option><option>ТАТУ</option><option>Westminster (ВШБ)</option><option>ТФЭУ</option><option>ТМА</option><option>ТГЮУ</option><option>Другой</option></select></div>
+        <div class="form-group"><label class="form-label">Навыки / Специализация</label><input id="s_skills" class="form-input" type="text" placeholder="SMM, Excel, вождение, английский..."></div>
+        <div class="form-group"><label class="form-label">Телефон</label><input id="s_phone" class="form-input" type="tel" placeholder="+998 90 123 45 67"></div>
+        <div class="form-group"><label class="form-label">Email</label><input id="s_email" class="form-input" type="email" placeholder="alisher@mail.uz"></div>
+        <div class="form-group"><label class="form-label">Пароль</label><input id="s_pass" class="form-input" type="password" placeholder="Минимум 8 символов"></div>
+        <button id="submitStudent" class="btn btn-primary form-submit">Создать аккаунт студента 🚀</button>
+        <p class="form-link">Уже есть аккаунт? <a href="#" onclick="switchTab('login');return false">Войти</a></p>
+      </div>
+
+      <!-- REGISTER EMPLOYER -->
+      <div id="regEmployerPane" style="display:none">
+        <div class="form-note form-note-green">🏢 Регистрация работодателя</div>
+        <div class="form-group"><label class="form-label">Название компании / организации</label><input id="e_company" class="form-input" type="text" placeholder="ООО «Ромашка» или ИП Каримов"></div>
+        <div class="form-group"><label class="form-label">Сфера деятельности</label><select id="e_sphere" class="form-input"><option value="">— выбери сферу —</option><option>Ресторан / Кафе / HoReCa</option><option>Торговля / Магазин</option><option>Ивент / Мероприятия</option><option>Логистика / Доставка</option><option>IT / Маркетинг / Медиа</option><option>Образование / Учебные центры</option><option>Строительство / Недвижимость</option><option>Другое</option></select></div>
+        <div class="form-group"><label class="form-label">Контактное лицо (ФИО)</label><input id="e_contact" class="form-input" type="text" placeholder="Нилуфар Рашидова — HR-менеджер"></div>
+        <div class="form-grid2">
+          <div class="form-group"><label class="form-label">Телефон</label><input id="e_phone" class="form-input" type="tel" placeholder="+998 71 200 00 00"></div>
+          <div class="form-group"><label class="form-label">Email</label><input id="e_email" class="form-input" type="email" placeholder="hr@company.uz"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Район Ташкента</label><select id="e_district" class="form-input"><option value="">— выбери район —</option><option>Юнусабад</option><option>Чиланзар</option><option>Мирзо-Улугбек</option><option>Яшнобод</option><option>Бектемир</option><option>Учтепа</option><option>Сергели</option><option>Удалённо</option></select></div>
+        <div class="form-group"><label class="form-label">Пароль</label><input id="e_pass" class="form-input" type="password" placeholder="Минимум 8 символов"></div>
+        <button id="submitEmployer" class="btn btn-primary form-submit" style="background:linear-gradient(135deg,var(--teal),var(--blue))">Зарегистрироваться как работодатель →</button>
+        <p class="form-link">Уже есть аккаунт? <a href="#" onclick="switchTab('login');return false">Войти</a></p>
+      </div>
+    </div>
+
+    <!-- POST JOB -->
+    <div id="postJobForm" style="display:none">
+      <div class="form-note form-note-teal">📋 Заполни детали — студенты увидят вакансию сразу после публикации</div>
+      <div class="form-group"><label class="form-label">Название вакансии</label><input id="j_title" class="form-input" type="text" placeholder="Промоутер на открытие магазина"></div>
+      <div class="form-grid2">
+        <div class="form-group"><label class="form-label">Категория</label><select id="j_category" class="form-input"><option value="">— категория —</option><option>Курьер</option><option>Промоутер</option><option>Официант</option><option>IT / SMM</option><option>Репетитор</option><option>Грузчик</option><option>Другое</option></select></div>
+        <div class="form-group"><label class="form-label">Район Ташкента</label><select id="j_district" class="form-input"><option value="">— район —</option><option>Юнусабад</option><option>Чиланзар</option><option>Мирзо-Улугбек</option><option>Яшнобод</option><option>Учтепа</option><option>Бектемир</option><option>Сергели</option><option>Удалённо</option></select></div>
+      </div>
+      <div class="form-grid3">
+        <div class="form-group"><label class="form-label">Оплата (сум/ч)</label><input id="j_pay" class="form-input" type="number" placeholder="35 000"></div>
+        <div class="form-group"><label class="form-label">Часов в день</label><input id="j_hours" class="form-input" type="number" placeholder="4"></div>
+        <div class="form-group"><label class="form-label">Время работы</label><select id="j_time" class="form-input"><option value="">— время —</option><option>Утро (6–12)</option><option>День (12–18)</option><option>Вечер (18–00)</option><option>Выходные</option><option>Гибкий</option></select></div>
+      </div>
+      <div class="form-group"><label class="form-label">Требования к студенту</label><input id="j_req" class="form-input" type="text" placeholder="Опрятный вид, знание русского, смартфон..."></div>
+      <div class="form-group"><label class="form-label">Описание задачи</label><textarea id="j_desc" class="form-textarea" placeholder="Подробно опиши что нужно делать, условия и важные детали..."></textarea></div>
+      <div class="form-group"><label class="form-label">Контактный телефон</label><input id="j_phone" class="form-input" type="tel" placeholder="+998 90 000 00 00"></div>
+      <button id="submitJob" class="btn btn-primary form-submit" style="background:linear-gradient(135deg,var(--teal),var(--blue))">Опубликовать вакансию 📋</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+// ====================================================
+// EMAILJS НАСТРОЙКА — замени на свои ключи из emailjs.com
+// ====================================================
+const EJS = {
+  publicKey:      '1gF-KqZ-8F_SRqmBe',       // Account → API Keys
+  serviceId:      'service_qwajc59',       // Email Services → Service ID
+  tmplStudent:    'template_n4gc1fc', // Template ID для студента
+  tmplEmployer:   'template_4hdl7lq',// Template ID для работодателя
+  tmplJob:        'template_4hdl7lq',     // Template ID для вакансии
+};
+emailjs.init(EJS.publicKey);
+// ====================================================
+
+const ALL_JOBS=[
+  {id:1,icon:'🛵',title:'Велокурьер для доставки еды',company:'FoodRun',district:'Юнусабад',category:'Курьер',pay:35000,time:'day',hours:'6–8 ч/день',badge:'🔥 Новая',bs:'background:#ECFDF5;color:#059669',tags:['Гибкий график']},
+  {id:2,icon:'🛵',title:'Курьер на мотоцикле (маркетплейс)',company:'ExpressUz',district:'Чиланзар',category:'Курьер',pay:28000,time:'morning',hours:'4–6 ч/день',badge:'Срочно',bs:'background:#FFF7ED;color:#C2410C',tags:['Утро']},
+  {id:3,icon:'🛵',title:'Пеший курьер для аптеки',company:'PharmExpress',district:'Яшнобод',category:'Курьер',pay:22000,time:'day',hours:'3–4 ч/день',badge:'Новая',bs:'background:#EEF4FF;color:#1A56DB',tags:['Ежедневно']},
+  {id:4,icon:'🛵',title:'Курьер-самокатчик для доставки',company:'QuickGo',district:'Мирзо-Улугбек',category:'Курьер',pay:30000,time:'evening',hours:'4 ч/вечер',badge:'Популярная',bs:'background:#F3E8FF;color:#7C3AED',tags:['Вечер']},
+  {id:5,icon:'📣',title:'Промоутер на открытие магазина',company:'SuperMall',district:'Чиланзар',category:'Промоутер',pay:40000,time:'weekend',hours:'8 ч/день',badge:'Срочно',bs:'background:#FFF7ED;color:#C2410C',tags:['Выходные','Разовый']},
+  {id:6,icon:'📣',title:'Промоутер для банка (раздача листовок)',company:'FinanceBank',district:'Юнусабад',category:'Промоутер',pay:35000,time:'morning',hours:'3–4 ч/день',badge:'🆕 Новая',bs:'background:#ECFDF5;color:#059669',tags:['Утро']},
+  {id:7,icon:'📣',title:'Промоутер на выставке недвижимости',company:'BuildExpo',district:'Бектемир',category:'Промоутер',pay:45000,time:'weekend',hours:'6 ч/день',badge:'🔥 Новая',bs:'background:#ECFDF5;color:#059669',tags:['Выходные']},
+  {id:8,icon:'🍽️',title:'Официант на свадебный банкет',company:'Event Pro',district:'Мирзо-Улугбек',category:'Официант',pay:45000,time:'evening',hours:'6–8 ч',badge:'🆕 Новая',bs:'background:#ECFDF5;color:#059669',tags:['Разовый','Вечер']},
+  {id:9,icon:'🍽️',title:'Официант в кафе (подмена)',company:'CafeAsia',district:'Яшнобод',category:'Официант',pay:32000,time:'day',hours:'5–8 ч/день',badge:'Срочно',bs:'background:#FFF7ED;color:#C2410C',tags:['Гибкий']},
+  {id:10,icon:'🍽️',title:'Бармен-помощник на вечеринку',company:'NightClub Tashkent',district:'Учтепа',category:'Официант',pay:50000,time:'evening',hours:'6 ч/вечер',badge:'Популярная',bs:'background:#F3E8FF;color:#7C3AED',tags:['Вечер','Выходные']},
+  {id:11,icon:'💻',title:'SMM-помощник для кафе',company:'CafeModern',district:'Удалённо',category:'IT / SMM',pay:50000,time:'day',hours:'2–3 ч/день',badge:'Популярная',bs:'background:#F3E8FF;color:#7C3AED',tags:['Удалённо','Instagram']},
+  {id:12,icon:'💻',title:'Дизайнер для интернет-магазина',company:'ShopOnline',district:'Удалённо',category:'IT / SMM',pay:70000,time:'day',hours:'3–4 ч/день',badge:'🔥 Новая',bs:'background:#ECFDF5;color:#059669',tags:['Удалённо','Figma']},
+  {id:13,icon:'💻',title:'Верстальщик лендинга (HTML/CSS)',company:'WebAgency',district:'Удалённо',category:'IT / SMM',pay:80000,time:'morning',hours:'2–3 ч/день',badge:'Срочно',bs:'background:#FFF7ED;color:#C2410C',tags:['HTML','Удалённо']},
+  {id:14,icon:'💻',title:'Контент-менеджер для Telegram-канала',company:'MediaUz',district:'Сергели',category:'IT / SMM',pay:40000,time:'evening',hours:'1–2 ч/день',badge:'Новая',bs:'background:#EEF4FF;color:#1A56DB',tags:['Telegram','Гибкий']},
+  {id:15,icon:'📚',title:'Репетитор по математике (11 кл.)',company:'Частное лицо',district:'Яшнобод',category:'Репетитор',pay:60000,time:'evening',hours:'1.5 ч/занятие',badge:'Постоянный',bs:'background:#F1F5F9;color:#475569',tags:['Математика']},
+  {id:16,icon:'📚',title:'Репетитор английского для школьника',company:'Частное лицо',district:'Юнусабад',category:'Репетитор',pay:55000,time:'day',hours:'1 ч/занятие',badge:'🆕 Новая',bs:'background:#ECFDF5;color:#059669',tags:['Английский']},
+  {id:17,icon:'📚',title:'Репетитор по физике (ОРТ)',company:'Частное лицо',district:'Чиланзар',category:'Репетитор',pay:65000,time:'morning',hours:'2 ч/занятие',badge:'Срочно',bs:'background:#FFF7ED;color:#C2410C',tags:['Физика','ОРТ']},
+  {id:18,icon:'📦',title:'Грузчик — переезд офиса',company:'OfficeMove',district:'Учтепа',category:'Грузчик',pay:38000,time:'morning',hours:'5–6 часов',badge:'Горящая',bs:'background:#FFF7ED;color:#C2410C',tags:['Разовый','Утро']},
+  {id:19,icon:'📦',title:'Грузчик на склад (разгрузка фур)',company:'LogisticsHub',district:'Бектемир',category:'Грузчик',pay:30000,time:'morning',hours:'4–5 ч/день',badge:'Постоянный',bs:'background:#F1F5F9;color:#475569',tags:['Утро','Постоянный']},
+  {id:20,icon:'🎉',title:'Помощник организатора свадьбы',company:'WeddingPro',district:'Мирзо-Улугбек',category:'Другое',pay:42000,time:'weekend',hours:'8–10 ч/день',badge:'🔥 Новая',bs:'background:#ECFDF5;color:#059669',tags:['Свадьба','Выходные']},
+  {id:21,icon:'🎉',title:'Аниматор для детского праздника',company:'KidsParty',district:'Сергели',category:'Другое',pay:55000,time:'weekend',hours:'3–4 ч',badge:'Популярная',bs:'background:#F3E8FF;color:#7C3AED',tags:['Дети','Творческий']},
+  {id:22,icon:'🛒',title:'Помощник кассира в супермаркете',company:'GreenMart',district:'Чиланзар',category:'Другое',pay:25000,time:'morning',hours:'4 ч/день',badge:'Срочно',bs:'background:#FFF7ED;color:#C2410C',tags:['Утро','Постоянный']},
+  {id:23,icon:'📷',title:'Фотограф-ассистент на мероприятии',company:'PhotoStudio',district:'Юнусабад',category:'Другое',pay:60000,time:'weekend',hours:'4–6 ч',badge:'🆕 Новая',bs:'background:#ECFDF5;color:#059669',tags:['Фото','Творческий']}
+];
+
+function renderCard(j){
+  const tags=[`<span class="tag">📍 ${j.district}</span>`,`<span class="tag">⏱ ${j.hours}</span>`,...j.tags.map(t=>`<span class="tag">${t}</span>`)].join('');
+  return `<div class="listing-card" style="animation:fadeCard .35s ease both">
+    <div class="listing-header"><span class="listing-badge" style="${j.bs}">${j.badge}</span><span style="font-size:1.3rem">${j.icon}</span></div>
+    <div class="listing-title">${j.title}</div>
+    <div class="listing-company">${j.company} — ${j.district}</div>
+    <div class="listing-tags">${tags}</div>
+    <div class="listing-footer">
+      <div class="pay">${j.pay.toLocaleString('ru-RU')} <span>сум/ч</span></div>
+      <button class="btn btn-primary" style="padding:.4rem 1rem;font-size:.8rem" onclick="openModal('register')">Откликнуться</button>
+    </div></div>`;
+}
+
+function renderJobs(jobs){
+  const grid=document.getElementById('jobsGrid');
+  const noRes=document.getElementById('noResults');
+  const info=document.getElementById('resultsInfo');
+  if(!jobs.length){grid.style.display='none';noRes.style.display='block';info.style.display='none';}
+  else{grid.style.display='grid';noRes.style.display='none';info.style.display='block';info.textContent=`Найдено вакансий: ${jobs.length}`;grid.innerHTML=jobs.map(renderCard).join('');}
+}
+
+function applyFilters(){
+  const d=document.getElementById('filterDistrict').value;
+  const p=document.getElementById('filterPay').value;
+  const t=document.getElementById('filterTime').value;
+  const c=document.getElementById('filterCategory').value;
+  renderJobs(ALL_JOBS.filter(j=>{
+    if(d&&j.district!==d)return false;
+    if(p==='low'&&j.pay>=30000)return false;
+    if(p==='mid'&&(j.pay<30000||j.pay>50000))return false;
+    if(p==='high'&&j.pay<=50000)return false;
+    if(t&&j.time!==t)return false;
+    if(c&&j.category!==c)return false;
+    return true;
+  }));
+}
+
+function resetFilters(){
+  ['filterDistrict','filterPay','filterTime','filterCategory'].forEach(id=>document.getElementById(id).value='');
+  renderJobs(ALL_JOBS);
+  document.getElementById('resultsInfo').style.display='none';
+}
+
+function filterByCategory(cat){
+  document.getElementById('filterCategory').value=cat;
+  applyFilters();
+}
+
+// ====== FORM SUBMIT HELPERS ======
+function showToast(msg, ok=true){
+  const t=document.createElement('div');
+  t.textContent=msg;
+  t.style.cssText=`position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:${ok?'#059669':'#DC2626'};color:white;padding:.9rem 2rem;border-radius:50px;font-family:'Onest',sans-serif;font-weight:600;font-size:.9rem;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,.2);animation:fadeCard .3s ease`;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),4000);
+}
+
+function setBtn(id, loading, label){
+  const btn=document.getElementById(id);
+  btn.disabled=loading;
+  btn.textContent=loading?'Отправляем...' : label;
+}
+
+function g(id){ return document.getElementById(id).value.trim(); }
+
+// ── Студент ──
+document.getElementById('submitStudent').addEventListener('click', async function(){
+  if(!g('s_first')||!g('s_last')||!g('s_phone')||!g('s_email')||!g('s_university')){
+    showToast('Заполни все обязательные поля',false); return;
+  }
+  setBtn('submitStudent', true);
+  try{
+    await emailjs.send(EJS.serviceId, EJS.tmplStudent, {
+      subject:    `Новый студент: ${g('s_first')} ${g('s_last')}`,
+      from_name:  `${g('s_first')} ${g('s_last')}`,
+      role:       'Студент',
+      name:       `${g('s_first')} ${g('s_last')}`,
+      age:        g('s_age'),
+      course:     g('s_course'),
+      university: g('s_university'),
+      skills:     g('s_skills'),
+      phone:      g('s_phone'),
+      email:      g('s_email'),
+    });
+    showToast('✅ Заявка отправлена! Скоро свяжемся с тобой.');
+    loginUser('student', {
+      first: g('s_first'), last: g('s_last'), age: g('s_age'),
+      course: g('s_course'), university: g('s_university'),
+      skills: g('s_skills'), phone: g('s_phone'), email: g('s_email')
+    });
+    closeModal();
+    ['s_first','s_last','s_age','s_skills','s_phone','s_email','s_pass'].forEach(id=>document.getElementById(id).value='');
+    setTimeout(()=>openStudentDash(), 400);
+  } catch(err){
+    console.error('EmailJS error:', err);
+    showToast('Ошибка отправки: ' + (err.text||err.message||JSON.stringify(err)), false);
+  }
+  setBtn('submitStudent', false, 'Создать аккаунт студента 🚀');
+});
+
+// ── Работодатель ──
+document.getElementById('submitEmployer').addEventListener('click', async function(){
+  if(!g('e_company')||!g('e_contact')||!g('e_phone')||!g('e_email')){
+    showToast('Заполни все обязательные поля',false); return;
+  }
+  setBtn('submitEmployer', true);
+  try{
+    await emailjs.send(EJS.serviceId, EJS.tmplEmployer, {
+      subject:  `Новый работодатель: ${g('e_company')}`,
+      from_name: g('e_company'),
+      role:     'Работодатель',
+      company:  g('e_company'),
+      sphere:   g('e_sphere'),
+      contact:  g('e_contact'),
+      phone:    g('e_phone'),
+      email:    g('e_email'),
+      district: g('e_district'),
+    });
+    showToast('✅ Регистрация отправлена! Скоро свяжемся с вами.');
+    loginUser('employer', {
+      company: g('e_company'), sphere: g('e_sphere'), contact: g('e_contact'),
+      phone: g('e_phone'), email: g('e_email'), district: g('e_district')
+    });
+    closeModal();
+    ['e_company','e_contact','e_phone','e_email','e_pass'].forEach(id=>document.getElementById(id).value='');
+    setTimeout(()=>openEmployerDash(), 400);
+  } catch(err){
+    console.error('EmailJS error:', err);
+    showToast('Ошибка отправки: ' + (err.text||err.message||JSON.stringify(err)), false);
+  }
+  setBtn('submitEmployer', false, 'Зарегистрироваться как работодатель →');
+});
+
+// ── Вакансия ──
+document.getElementById('submitJob').addEventListener('click', async function(){
+  if(!g('j_title')||!g('j_pay')||!g('j_phone')){
+    showToast('Заполни название, оплату и телефон',false); return;
+  }
+  setBtn('submitJob', true);
+  try{
+    await emailjs.send(EJS.serviceId, EJS.tmplJob, {
+      subject:       `Новая вакансия: ${g('j_title')}`,
+      from_name:     'Новая вакансия на ШАГ',
+      title:         g('j_title'),
+      category:      g('j_category'),
+      district:      g('j_district'),
+      pay:           g('j_pay'),
+      hours:         g('j_hours'),
+      time_slot:     g('j_time'),
+      requirements:  g('j_req'),
+      description:   document.getElementById('j_desc').value.trim(),
+      contact_phone: g('j_phone'),
+    });
+    showToast('✅ Вакансия отправлена! Скоро появится на сайте.');
+    closeModal();
+    ['j_title','j_pay','j_hours','j_req','j_phone'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('j_desc').value='';
+  } catch(err){
+    console.error('EmailJS error:', err);
+    showToast('Ошибка отправки: ' + (err.text||err.message||JSON.stringify(err)), false);
+  }
+  setBtn('submitJob', false, 'Опубликовать вакансию 📋');
+});
+
+// ====== AUTH / DASHBOARD ======
+let currentUser = null; // { role, name, data }
+
+function loginUser(role, data) {
+  currentUser = { role, data };
+  // Update nav
+  document.getElementById('navActions').style.display = 'none';
+  const nu = document.getElementById('navUser');
+  nu.style.display = 'flex';
+  const initials = role === 'student'
+    ? (data.first[0] || '?').toUpperCase()
+    : (data.company[0] || '?').toUpperCase();
+  document.getElementById('navAvatar').textContent = initials;
+  document.getElementById('navUser').querySelector('button').textContent = 'Кабинет';
+}
+
+function logout() {
+  currentUser = null;
+  document.getElementById('navActions').style.display = 'flex';
+  document.getElementById('navUser').style.display = 'none';
+  closeDashboard();
+  showToast('Вы вышли из аккаунта');
+}
+
+function openDashboard() {
+  if (!currentUser) { openModal('login'); return; }
+  if (currentUser.role === 'student') openStudentDash();
+  else openEmployerDash();
+}
+
+function closeDashboard() {
+  document.getElementById('dashStudent').classList.remove('open');
+  document.getElementById('dashEmployer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function openStudentDash() {
+  const d = currentUser.data;
+  const name = `${d.first} ${d.last}`;
+  document.getElementById('dashStudentName').textContent = name;
+  document.getElementById('dashStudentAvatar').textContent = (d.first[0]||'?').toUpperCase();
+  document.getElementById('dashStudentGreeting').textContent = `Привет, ${d.first}! 👋`;
+  document.getElementById('dashStudentMeta').textContent =
+    `${d.university || 'Университет не указан'} · ${d.course || ''}`;
+
+  // Profile card
+  document.getElementById('studentProfileCard').innerHTML = `
+    <div class="dash-profile-row"><span class="dash-profile-label">Имя</span><span class="dash-profile-val">${name}</span></div>
+    <div class="dash-profile-row"><span class="dash-profile-label">Возраст</span><span class="dash-profile-val">${d.age || '—'}</span></div>
+    <div class="dash-profile-row"><span class="dash-profile-label">Курс</span><span class="dash-profile-val">${d.course || '—'}</span></div>
+    <div class="dash-profile-row"><span class="dash-profile-label">Университет</span><span class="dash-profile-val">${d.university || '—'}</span></div>
+    <div class="dash-profile-row"><span class="dash-profile-label">Телефон</span><span class="dash-profile-val">${d.phone || '—'}</span></div>
+    <div class="dash-profile-row"><span class="dash-profile-label">Email</span><span class="dash-profile-val">${d.email || '—'}</span></div>
+    <div class="dash-profile-row"><span class="dash-profile-label">Навыки</span><span class="dash-profile-val">${d.skills ? d.skills.split(',').map(s=>`<span class="dash-tag">${s.trim()}</span>`).join('') : '—'}</span></div>
+  `;
+
+  // Recommended jobs (random 3)
+  const picks = [...ALL_JOBS].sort(()=>Math.random()-.5).slice(0,3);
+  document.getElementById('studentRecommended').innerHTML = picks.map(j => `
+    <div class="dash-item">
+      <div class="dash-item-icon">${j.icon}</div>
+      <div class="dash-item-info">
+        <div class="dash-item-title">${j.title}</div>
+        <div class="dash-item-sub">📍 ${j.district} · ${j.hours}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:'Unbounded',sans-serif;font-size:.85rem;font-weight:700;color:var(--blue)">${j.pay.toLocaleString('ru-RU')} сум/ч</div>
+        <button class="btn btn-primary" style="padding:.3rem .8rem;font-size:.72rem;margin-top:.3rem" onclick="closeDashboard();openModal('register')">Откликнуться</button>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('dashStudent').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function openEmployerDash() {
+  const d = currentUser.data;
+  document.getElementById('dashEmployerName').textContent = d.company;
+  document.getElementById('dashEmployerAvatar').textContent = (d.company[0]||'?').toUpperCase();
+  document.getElementById('dashEmployerGreeting').textContent = `Добро пожаловать, ${d.company}! 👋`;
+  document.getElementById('dashEmployerMeta').textContent =
+    `${d.sphere || 'Сфера не указана'} · ${d.district || 'Район не указан'}`;
+
+  document.getElementById('employerProfileCard').innerHTML = `
+    <div class="dash-profile-row"><span class="dash-profile-label">Компания</span><span class="dash-profile-val">${d.company}</span></div>
+    <div class="dash-profile-row"><span class="dash-profile-label">Сфера</span><span class="dash-profile-val">${d.sphere || '—'}</span></div>
+    <div class="dash-profile-row"><span class="dash-profile-label">Контакт</span><span class="dash-profile-val">${d.contact || '—'}</span></div>
+    <div class="dash-profile-row"><span class="dash-profile-label">Телефон</span><span class="dash-profile-val">${d.phone || '—'}</span></div>
+    <div class="dash-profile-row"><span class="dash-profile-label">Email</span><span class="dash-profile-val">${d.email || '—'}</span></div>
+    <div class="dash-profile-row"><span class="dash-profile-label">Район</span><span class="dash-profile-val">${d.district || '—'}</span></div>
+  `;
+
+  document.getElementById('dashEmployer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+// ── Вход (логин-заглушка — принимает любые данные, роль выбирается радио-кнопкой) ──
+document.getElementById('loginSubmit').addEventListener('click', function() {
+  const id = document.getElementById('login_id').value.trim();
+  const role = document.querySelector('input[name="loginRole"]:checked').value;
+  if (!id) { showToast('Введи телефон или email', false); return; }
+
+  // Demo login — заполняем данные из последней регистрации или дефолтные
+  if (role === 'student') {
+    const data = {
+      first: id.includes('@') ? id.split('@')[0] : 'Студент',
+      last: '',
+      age: '', course: '', university: 'Не указан', skills: '', phone: id, email: id
+    };
+    loginUser('student', data);
+    closeModal();
+    showToast('✅ Вход выполнен!');
+    setTimeout(() => openStudentDash(), 300);
+  } else {
+    const data = {
+      company: id.includes('@') ? id.split('@')[0] : id,
+      sphere: '', contact: '', phone: id, email: id, district: ''
+    };
+    loginUser('employer', data);
+    closeModal();
+    showToast('✅ Вход выполнен!');
+    setTimeout(() => openEmployerDash(), 300);
+  }
+});
+
+// После успешной регистрации студента — автологин
+
+function openModal(type){
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  const auth=document.getElementById('authForm');
+  const post=document.getElementById('postJobForm');
+  if(type==='postjob'){
+    auth.style.display='none';post.style.display='block';
+    document.getElementById('modalTitle').textContent='Разместить вакансию';
+  } else {
+    auth.style.display='block';post.style.display='none';
+    if(type==='employer'){selectRole('employer');switchTab('register');}
+    else if(type==='login'){switchTab('login');}
+    else{selectRole('student');switchTab('register');}
+  }
+}
+
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function closeModalOutside(e){
+  if(e.target===document.getElementById('modalOverlay'))closeModal();
+}
+
+function selectRole(role){
+  curRole=role;
+  document.getElementById('roleStudent').classList.toggle('active',role==='student');
+  document.getElementById('roleEmployerBtn').classList.toggle('active',role==='employer');
+  if(curTab==='register'){
+    document.getElementById('regStudentPane').style.display=role==='student'?'block':'none';
+    document.getElementById('regEmployerPane').style.display=role==='employer'?'block':'none';
+    document.getElementById('modalTitle').textContent=role==='student'?'Регистрация студента':'Регистрация работодателя';
+  }
+}
+
+function switchTab(tab){
+  curTab=tab;
+  document.getElementById('tabLogin').classList.toggle('active',tab==='login');
+  document.getElementById('tabReg').classList.toggle('active',tab==='register');
+  document.getElementById('roleSection').style.display=tab==='register'?'block':'none';
+  document.getElementById('loginPane').style.display=tab==='login'?'block':'none';
+  if(tab==='login'){
+    document.getElementById('regStudentPane').style.display='none';
+    document.getElementById('regEmployerPane').style.display='none';
+    document.getElementById('modalTitle').textContent='Вход в аккаунт';
+  } else {
+    selectRole(curRole);
+  }
+}
+
+// Scroll animations
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+
+// Hamburger
+function toggleMenu(){
+  const nl=document.querySelector('.nav-links');
+  const open=nl.style.display==='flex';
+  nl.style.display=open?'none':'flex';
+  if(!open){nl.style.cssText='display:flex;flex-direction:column;position:absolute;top:64px;left:0;right:0;background:white;padding:1rem 5%;border-bottom:1px solid #E2E8F0;z-index:99';}
+}
+
+renderJobs(ALL_JOBS);
+</script>
+</body>
+</html>
